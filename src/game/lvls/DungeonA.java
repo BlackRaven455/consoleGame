@@ -14,4 +14,9 @@ public class DungeonA implements iLevels {
             {1, 0, 1, 1, 0, 1, 1, 0, 1},
             {1, 0, 0, 0, 0, 0, 0, 2, 1},
             {1, 1, 1, 1, 1, 1, 1, 1, 1}}; //9x9
+
+    @Override
+    public  int[][] getMapArr() {
+        return mapArr;
+    }
 }

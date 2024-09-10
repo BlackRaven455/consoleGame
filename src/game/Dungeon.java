@@ -7,16 +7,15 @@ import game.lvls.DungeonB;
 
 import java.util.Scanner;
 
-public class Dungeon{
+public class Dungeon {
     Player player = new Player();
     Scanner scanner = new Scanner(System.in);
     int[][] level;
-//    iLevels[] dungeonLevels = new iLevels[2]{ new DungeonA, new DungeonB};
+    iLevels[] dungeonLevels = new iLevels[]{new DungeonA(), new DungeonB()}; // Инициализация уровней
 
     public Dungeon(int[][] level) {
         this.level = level;
     }
-
 
     public void startLevel() {
         int[] playerCurrPos;
@@ -61,26 +60,27 @@ public class Dungeon{
                 // Если игрок вышел за границы или попал на стену (1), откатываем его обратно
                 System.out.println("You hit a wall or boundary! Returning to previous position.");
                 player.setPosition(prevX, prevY);
-            }
-            if(level[player.positionX][player.positionY] == 2){
+            } else if (level[newY][newX] == 2) {
+                // Если игрок достиг цели, смена уровня
                 System.out.println("Congratulations! You have cleared a level!");
-                this.level = DungeonB.mapArr;
-                player.setPosition(1, 1);
+                this.level = dungeonLevels[1].getMapArr(); // Получение нового уровня
+                player.setPosition(1, 1); // Перемещение игрока в начальную позицию нового уровня
+                // Можете добавить логику, чтобы переключаться на следующий уровень, если это необходимо
             }
+
             // Очистка консоли
             System.out.println("\033[H\033[2J");
             System.out.flush();
 
             // Перерисовка уровня с новой (или предыдущей) позицией игрока
-            this.drawLevel(player.CurrentPos()[0], player.CurrentPos()[1]);
+            this.drawLevel(player.CurrentPos()[1], player.CurrentPos()[0]);
         }
     }
-
 
     public void drawLevel(int playerPosX, int playerPosY) {
         for (int i = 0; i < level.length; i++) {
             for (int j = 0; j < level[i].length; j++) { // Используйте level[i].length вместо level.length
-                if (i == playerPosX && j == playerPosY) {
+                if (i == playerPosY && j == playerPosX) {
                     System.out.print("P ");
                 } else if (level[i][j] == 2) {
                     System.out.print("% ");

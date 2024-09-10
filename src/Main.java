@@ -19,6 +19,7 @@ public class Main {
                 case "1":
                     System.out.println("Welcome to the MISSION game");
                     System.out.println("Use W (up), A (left), S (down), D (right) to move the player: ");
+
                     dungeon = new Dungeon(DungeonA.mapArr);
                     dungeon.startLevel();
                     break;
