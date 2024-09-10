@@ -1,10 +1,15 @@
 package game;
 
+import api.Enemy;
 import api.Movement;
 import api.iLevels;
+import game.Items.Shield;
+import game.Items.Sword;
+import game.enemies.Slime;
 import game.lvls.DungeonA;
 import game.lvls.DungeonB;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Dungeon {
@@ -12,7 +17,8 @@ public class Dungeon {
     Scanner scanner = new Scanner(System.in);
     int[][] level;
     iLevels[] dungeonLevels = new iLevels[]{new DungeonA(), new DungeonB()}; // Инициализация уровней
-
+    ArrayList<Enemy> enemy = new ArrayList<>();
+    int numberOfEnemies;
     public Dungeon(int[][] level) {
         this.level = level;
     }
@@ -66,6 +72,18 @@ public class Dungeon {
                 this.level = dungeonLevels[1].getMapArr(); // Получение нового уровня
                 player.setPosition(1, 1); // Перемещение игрока в начальную позицию нового уровня
                 // Можете добавить логику, чтобы переключаться на следующий уровень, если это необходимо
+            } else if (level[newY][newX] == 3) {
+                player.equip(new Sword());
+            } else if (level[newY][newX] == 4) {
+                player.equip(new Shield());
+            } else if (level[newY][newX] == 5) {
+                player.attack(enemy.get(0));
+                System.out.println("Slime attack power:" + enemy.get(0).getAttackPower() + ".Player HP" + player.getHP());
+                System.out.println("Slime Hp:" + enemy.get(0).getHP());
+                player.setPosition(prevX, prevY);
+                if (enemy.get(0).getHP() <=0){
+                    level[enemy.get(0).getPosY()][enemy.get(0).getPosX()] = '0';
+                }
             }
 
             // Очистка консоли
@@ -82,6 +100,16 @@ public class Dungeon {
             for (int j = 0; j < level[i].length; j++) { // Используйте level[i].length вместо level.length
                 if (i == playerPosY && j == playerPosX) {
                     System.out.print("P ");
+                } else if (level[i][j] == 5) {
+                    enemy.add(new Slime());
+                    numberOfEnemies++;
+                    enemy.get(numberOfEnemies).setPosX(j);
+                    enemy.get(numberOfEnemies).setPosY(i);
+                    System.out.print("E ");
+                } else if (level[i][j] == 4) {
+                    System.out.print("Q ");
+                } else if (level[i][j] == 3) {
+                    System.out.print("S ");
                 } else if (level[i][j] == 2) {
                     System.out.print("% ");
                 } else if (level[i][j] == 1) {

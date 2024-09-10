@@ -12,7 +12,7 @@ public class Main {
         while(continueGame){
             Dungeon dungeon;
 
-            System.out.println("Please enter a number between 1 and 10");
+            System.out.println("Please enter a number between 1 and 3");
             System.out.println("1 - Start game;\n2 - About;\n3 - Exit");
             String number = input.nextLine();
             switch(number){
