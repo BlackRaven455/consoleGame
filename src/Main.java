@@ -1,4 +1,5 @@
 import api.iLevels;
+import game.Dungeon;
 import game.lvls.DungeonA;
 
 import java.util.Scanner;
@@ -9,7 +10,7 @@ public class Main {
         Scanner input = new Scanner(System.in);
         boolean continueGame = true;
         while(continueGame){
-            iLevels level;
+            Dungeon dungeon;
 
             System.out.println("Please enter a number between 1 and 10");
             System.out.println("1 - Start game;\n2 - About;\n3 - Exit");
@@ -18,8 +19,8 @@ public class Main {
                 case "1":
                     System.out.println("Welcome to the MISSION game");
                     System.out.println("Use W (up), A (left), S (down), D (right) to move the player: ");
-                    level = new DungeonA();
-                    level.startLevel();
+                    dungeon = new Dungeon(DungeonA.mapArr);
+                    dungeon.startLevel();
                     break;
                 case "2": System.out.println("This game is made for...");
                 break;

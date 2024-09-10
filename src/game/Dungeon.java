@@ -2,31 +2,37 @@ package game;
 
 import api.Movement;
 import api.iLevels;
+import game.lvls.DungeonA;
+import game.lvls.DungeonB;
 
 import java.util.Scanner;
 
-public class Dungeon implements iLevels {
+public class Dungeon{
     Player player = new Player();
     Scanner scanner = new Scanner(System.in);
-    Movement movement;
-    int[][] level = new int[][]{};
-    Dungeon(int[][] level){
+    int[][] level;
+//    iLevels[] dungeonLevels = new iLevels[2]{ new DungeonA, new DungeonB};
+
+    public Dungeon(int[][] level) {
         this.level = level;
     }
-    @Override
+
+
     public void startLevel() {
         int[] playerCurrPos;
         this.drawLevel(player.CurrentPos()[0], player.CurrentPos()[1]); // Первоначальная отрисовка уровня
 
-
         boolean continueLevel = true;
         while (continueLevel) {
             String input = scanner.nextLine().toUpperCase();
-            int prevX = player.CurrentPos()[0]; // Сохраняем предыдущую позицию X
-            int prevY = player.CurrentPos()[1]; // Сохраняем предыдущую позицию Y
             if (input.isEmpty()) {
                 continue;
             }
+
+            Movement movement = Movement.fromChar(input.charAt(0));
+
+            int prevX = player.CurrentPos()[0]; // Сохраняем предыдущую позицию X
+            int prevY = player.CurrentPos()[1]; // Сохраняем предыдущую позицию Y
             switch (movement) {
                 case UP:
                     player.moveUP();
@@ -54,10 +60,13 @@ public class Dungeon implements iLevels {
             if (newX < 0 || newX >= level.length || newY < 0 || newY >= level[0].length || level[newX][newY] == 1) {
                 // Если игрок вышел за границы или попал на стену (1), откатываем его обратно
                 System.out.println("You hit a wall or boundary! Returning to previous position.");
-                player.positionX = prevX;
-                player.positionY = prevY;
+                player.setPosition(prevX, prevY); // Используйте метод для установки позиции
             }
-
+            if(level[player.positionX][player.positionY] == 2){
+                System.out.println("Congratulations! You have cleared a level!");
+                this.level = DungeonB.mapArr;
+                player.setPosition(1, 1);
+            }
             // Очистка консоли
             System.out.println("\033[H\033[2J");
             System.out.flush();
@@ -66,19 +75,23 @@ public class Dungeon implements iLevels {
             this.drawLevel(player.CurrentPos()[0], player.CurrentPos()[1]);
         }
     }
-    @Override
+
+
     public void drawLevel(int playerPosX, int playerPosY) {
         for (int i = 0; i < level.length; i++) {
-            for (int j = 0; j < level.length; j++) {
+            for (int j = 0; j < level[i].length; j++) { // Используйте level[i].length вместо level.length
                 if (i == playerPosX && j == playerPosY) {
                     System.out.print("P ");
-                } else {
-                    System.out.print(level[i][j] + " ");
+                } else if (level[i][j] == 2) {
+                    System.out.print("% ");
+                } else if (level[i][j] == 1) {
+                    System.out.print("■ ");
+                } else if (level[i][j] == 0) {
+                    System.out.print("  "); // Пустое пространство
                 }
             }
             System.out.println();
         }
         System.out.println();
-
     }
 }

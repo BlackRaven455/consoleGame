@@ -33,5 +33,10 @@ public class Player implements iPlayer {
         // Moving right increases the column number (currentPosJ)
         positionX++;
     }
+
+    public void setPosition(int prevX, int prevY) {
+        positionX = prevX;
+        positionY = prevY;
+    }
 }
 
