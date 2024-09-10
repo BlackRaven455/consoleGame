@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class Player{
     public int positionY = 1; // Represents raw
     public int positionX = 1; // Represents column
-    private ArrayList<Item> itemArrayList;
+    private ArrayList<Item> itemArrayList = new ArrayList<>();
     private int HP = 100;
     private int attackPower = 3;
     private int defensePower = 3;

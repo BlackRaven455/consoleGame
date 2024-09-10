@@ -10,22 +10,44 @@ import game.lvls.DungeonA;
 import game.lvls.DungeonB;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Scanner;
 
 public class Dungeon {
+    private static final int WALL = 1;
+    private static final int GOAL = 2;
+    private static final int SWORD = 3;
+    private static final int SHIELD = 4;
+    private static final int ENEMY = 5;
+
     Player player = new Player();
     Scanner scanner = new Scanner(System.in);
     int[][] level;
-    iLevels[] dungeonLevels = new iLevels[]{new DungeonA(), new DungeonB()}; // Инициализация уровней
-    ArrayList<Enemy> enemy = new ArrayList<>();
+    iLevels[] dungeonLevels = new iLevels[]{new DungeonA(), new DungeonB()};
+    ArrayList<Enemy> enemies = new ArrayList<>();
     int numberOfEnemies;
+
     public Dungeon(int[][] level) {
         this.level = level;
+        enemyPosition();
+    }
+
+    public void enemyPosition() {
+        for (int i = 0; i < level.length; i++) {
+            for (int j = 0; j < level[i].length; j++) {
+                if (level[i][j] == ENEMY) {
+                    Enemy newEnemy = new Slime();
+                    newEnemy.setPosX(j);
+                    newEnemy.setPosY(i);
+                    enemies.add(newEnemy);
+                }
+            }
+        }
     }
 
     public void startLevel() {
         int[] playerCurrPos;
-        this.drawLevel(player.CurrentPos()[1], player.CurrentPos()[0]); // Первоначальная отрисовка уровня
+        this.drawLevel(player.CurrentPos()[1], player.CurrentPos()[0]);
 
         boolean continueLevel = true;
         while (continueLevel) {
@@ -36,8 +58,8 @@ public class Dungeon {
 
             Movement movement = Movement.fromChar(input.charAt(0));
 
-            int prevX = player.CurrentPos()[1]; // Сохраняем предыдущую позицию X
-            int prevY = player.CurrentPos()[0]; // Сохраняем предыдущую позицию Y
+            int prevX = player.CurrentPos()[1];
+            int prevY = player.CurrentPos()[0];
             switch (movement) {
                 case UP:
                     player.moveUP();
@@ -56,66 +78,65 @@ public class Dungeon {
                     continue;
             }
 
-            // Получение новой позиции игрока
             playerCurrPos = player.CurrentPos();
             int newX = playerCurrPos[1];
             int newY = playerCurrPos[0];
 
-            // Проверка на столкновение с границами карты или препятствиями
-            if (newY < 0 || newY >= level.length || newX < 0 || newX >= level[0].length || level[newY][newX] == 1) {
-                // Если игрок вышел за границы или попал на стену (1), откатываем его обратно
+            if (newY < 0 || newY >= level.length || newX < 0 || newX >= level[0].length || level[newY][newX] == WALL) {
                 System.out.println("You hit a wall or boundary! Returning to previous position.");
                 player.setPosition(prevX, prevY);
-            } else if (level[newY][newX] == 2) {
-                // Если игрок достиг цели, смена уровня
+            } else if (level[newY][newX] == GOAL) {
                 System.out.println("Congratulations! You have cleared a level!");
-                this.level = dungeonLevels[1].getMapArr(); // Получение нового уровня
-                player.setPosition(1, 1); // Перемещение игрока в начальную позицию нового уровня
-                // Можете добавить логику, чтобы переключаться на следующий уровень, если это необходимо
-            } else if (level[newY][newX] == 3) {
+                this.level = dungeonLevels[1].getMapArr();
+                enemyPosition();
+                player.setPosition(1, 1);
+            } else if (level[newY][newX] == SWORD) {
                 player.equip(new Sword());
-            } else if (level[newY][newX] == 4) {
+                level[newY][newX] = 0;
+                System.out.println("Sword equipped!");
+            } else if (level[newY][newX] == SHIELD) {
                 player.equip(new Shield());
-            } else if (level[newY][newX] == 5) {
-                player.attack(enemy.get(0));
-                System.out.println("Slime attack power:" + enemy.get(0).getAttackPower() + ".Player HP" + player.getHP());
-                System.out.println("Slime Hp:" + enemy.get(0).getHP());
-                player.setPosition(prevX, prevY);
-                if (enemy.get(0).getHP() <=0){
-                    level[enemy.get(0).getPosY()][enemy.get(0).getPosX()] = '0';
+                level[newY][newY] = 0;
+                System.out.println("Shield equipped!");
+            } else if (level[newY][newX] == ENEMY) {
+                for (Enemy enemy : enemies) {
+                    if (enemy.getPosX() == newX && enemy.getPosY() == newY) {
+                        player.attack(enemy);
+                        System.out.println("Enemy attack power: " + enemy.getAttackPower() + ". Player HP: " + player.getHP());
+                        System.out.println("Enemy HP: " + enemy.getHP());
+                        if (enemy.getHP() <= 0) {
+                            level[enemy.getPosY()][enemy.getPosX()] = 0;
+                            enemies.remove(enemy);
+                        }
+                        break; // Exit the loop once we've attacked the correct enemy
+                    }
                 }
             }
 
-            // Очистка консоли
             System.out.println("\033[H\033[2J");
             System.out.flush();
 
-            // Перерисовка уровня с новой (или предыдущей) позицией игрока
             this.drawLevel(player.CurrentPos()[1], player.CurrentPos()[0]);
         }
     }
 
     public void drawLevel(int playerPosX, int playerPosY) {
         for (int i = 0; i < level.length; i++) {
-            for (int j = 0; j < level[i].length; j++) { // Используйте level[i].length вместо level.length
+            for (int j = 0; j < level[i].length; j++) {
                 if (i == playerPosY && j == playerPosX) {
                     System.out.print("P ");
-                } else if (level[i][j] == 5) {
-                    enemy.add(new Slime());
-                    numberOfEnemies++;
-                    enemy.get(numberOfEnemies).setPosX(j);
-                    enemy.get(numberOfEnemies).setPosY(i);
+                } else if (level[i][j] == ENEMY) {
                     System.out.print("E ");
-                } else if (level[i][j] == 4) {
+                } else if (level[i][j] == SHIELD) {
                     System.out.print("Q ");
-                } else if (level[i][j] == 3) {
+                } else if (level[i][j] == SWORD) {
                     System.out.print("S ");
-                } else if (level[i][j] == 2) {
+                } else if (level[i][j] == GOAL) {
                     System.out.print("% ");
-                } else if (level[i][j] == 1) {
+                } else if (level[i][j] == WALL) {
                     System.out.print("■ ");
                 } else if (level[i][j] == 0) {
-                    System.out.print("  "); // Пустое пространство
+                    System.out.print("  ");
                 }
             }
             System.out.println();
