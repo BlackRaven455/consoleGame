@@ -8,9 +8,54 @@ public class Player{
     public int positionY = 1; // Represents raw
     public int positionX = 1; // Represents column
     private ArrayList<Item> itemArrayList = new ArrayList<>();
+
     private int HP = 100;
-    private int attackPower = 3;
-    private int defensePower = 3;
+    private int attackPower = 2;
+    private int defensePower = 2;
+
+    public int getPositionY() {
+        return positionY;
+    }
+
+    public void setPositionY(int positionY) {
+        this.positionY = positionY;
+    }
+
+    public int getPositionX() {
+        return positionX;
+    }
+
+    public void setPositionX(int positionX) {
+        this.positionX = positionX;
+    }
+
+    public ArrayList<Item> getItemArrayList() {
+        return itemArrayList;
+    }
+
+    public void setItemArrayList(ArrayList<Item> itemArrayList) {
+        this.itemArrayList = itemArrayList;
+    }
+
+    public void setHP(int HP) {
+        this.HP = HP;
+    }
+
+    public int getAttackPower() {
+        return attackPower;
+    }
+
+    public void setAttackPower(int attackPower) {
+        this.attackPower = attackPower;
+    }
+
+    public int getDefensePower() {
+        return defensePower;
+    }
+
+    public void setDefensePower(int defensePower) {
+        this.defensePower = defensePower;
+    }
 
     public void equip(Item item){
         itemArrayList.add(item);

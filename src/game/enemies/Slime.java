@@ -3,7 +3,9 @@ package game.enemies;
 import api.Enemy;
 
 public class Slime extends Enemy {
-    private int attackPower = 4;
-    private int defensePower = 3;
-    private int HP = 30;
+    public Slime(){
+        super.attackPower = 4;
+        super.defensePower = 3;
+        super.HP = 30;
+    }
 }

@@ -10,7 +10,6 @@ import game.lvls.DungeonA;
 import game.lvls.DungeonB;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Scanner;
 
 public class Dungeon {
@@ -91,19 +90,22 @@ public class Dungeon {
                 enemyPosition();
                 player.setPosition(1, 1);
             } else if (level[newY][newX] == SWORD) {
-                player.equip(new Sword());
+                Sword sword = new Sword();
+                player.equip(sword);
                 level[newY][newX] = 0;
-                System.out.println("Sword equipped!");
+                System.out.println("Sword(AP = " + sword.getAttackPower() + ") equipped! ");
+
             } else if (level[newY][newX] == SHIELD) {
-                player.equip(new Shield());
-                level[newY][newY] = 0;
-                System.out.println("Shield equipped!");
+                Shield shield = new Shield();
+                player.equip(shield);
+                level[newY][newX] = 0;
+                System.out.println("Shield(DP = " + shield.getDefensePower()+") equipped!");
             } else if (level[newY][newX] == ENEMY) {
                 for (Enemy enemy : enemies) {
                     if (enemy.getPosX() == newX && enemy.getPosY() == newY) {
                         player.attack(enemy);
-                        System.out.println("Enemy attack power: " + enemy.getAttackPower() + ". Player HP: " + player.getHP());
-                        System.out.println("Enemy HP: " + enemy.getHP());
+                        player.setPosition(prevX, prevY);
+                        System.out.println("Enemy stats: AP -  " + enemy.getAttackPower() + " DP - " + enemy.getDefensePower() + "Enemy HP: " + enemy.getHP());
                         if (enemy.getHP() <= 0) {
                             level[enemy.getPosY()][enemy.getPosX()] = 0;
                             enemies.remove(enemy);
@@ -142,5 +144,7 @@ public class Dungeon {
             System.out.println();
         }
         System.out.println();
+        System.out.println("Player stats: AP - " + player.getAttackPower() + " DP - " + player.getDefensePower() + " HP - " + player.getHP());
+
     }
 }
