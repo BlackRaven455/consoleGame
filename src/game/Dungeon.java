@@ -103,7 +103,10 @@ public class Dungeon {
             } else if (level[newY][newX] == ENEMY) {
                 for (Enemy enemy : enemies) {
                     if (enemy.getPosX() == newX && enemy.getPosY() == newY) {
+                        System.out.println("Enemy stats: AP -  " + enemy.getAttackPower() + " DP - " + enemy.getDefensePower() + "Enemy HP: " + enemy.getHP());
+
                         player.attack(enemy);
+                        enemy.defense(player);
                         player.setPosition(prevX, prevY);
                         System.out.println("Enemy stats: AP -  " + enemy.getAttackPower() + " DP - " + enemy.getDefensePower() + "Enemy HP: " + enemy.getHP());
                         if (enemy.getHP() <= 0) {

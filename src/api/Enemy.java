@@ -30,6 +30,7 @@ public abstract class Enemy{
 
     }
     public void defense(Player player){
+        this.HP = this.HP+ this.defensePower - player.getAttackPower();
 
     }
     public int getAttackPower() {

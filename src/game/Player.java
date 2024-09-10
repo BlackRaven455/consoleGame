@@ -63,7 +63,7 @@ public class Player{
         this.defensePower = this.defensePower + item.getDefensePower();
     }
     public void attack(Enemy enemy){
-        enemy.setHP(this.attackPower);
+       enemy.setHP(enemy.getHP()+ enemy.getDefensePower() - this.attackPower);
     }
     public int getHP(){
         return this.HP;
