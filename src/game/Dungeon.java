@@ -20,7 +20,7 @@ public class Dungeon{
 
     public void startLevel() {
         int[] playerCurrPos;
-        this.drawLevel(player.CurrentPos()[0], player.CurrentPos()[1]); // Первоначальная отрисовка уровня
+        this.drawLevel(player.CurrentPos()[1], player.CurrentPos()[0]); // Первоначальная отрисовка уровня
 
         boolean continueLevel = true;
         while (continueLevel) {
@@ -31,8 +31,8 @@ public class Dungeon{
 
             Movement movement = Movement.fromChar(input.charAt(0));
 
-            int prevX = player.CurrentPos()[0]; // Сохраняем предыдущую позицию X
-            int prevY = player.CurrentPos()[1]; // Сохраняем предыдущую позицию Y
+            int prevX = player.CurrentPos()[1]; // Сохраняем предыдущую позицию X
+            int prevY = player.CurrentPos()[0]; // Сохраняем предыдущую позицию Y
             switch (movement) {
                 case UP:
                     player.moveUP();
@@ -53,14 +53,14 @@ public class Dungeon{
 
             // Получение новой позиции игрока
             playerCurrPos = player.CurrentPos();
-            int newX = playerCurrPos[0];
-            int newY = playerCurrPos[1];
+            int newX = playerCurrPos[1];
+            int newY = playerCurrPos[0];
 
             // Проверка на столкновение с границами карты или препятствиями
-            if (newX < 0 || newX >= level.length || newY < 0 || newY >= level[0].length || level[newX][newY] == 1) {
+            if (newY < 0 || newY >= level.length || newX < 0 || newX >= level[0].length || level[newY][newX] == 1) {
                 // Если игрок вышел за границы или попал на стену (1), откатываем его обратно
                 System.out.println("You hit a wall or boundary! Returning to previous position.");
-                player.setPosition(prevX, prevY); // Используйте метод для установки позиции
+                player.setPosition(prevX, prevY);
             }
             if(level[player.positionX][player.positionY] == 2){
                 System.out.println("Congratulations! You have cleared a level!");
